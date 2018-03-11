@@ -150,5 +150,23 @@
 		<url-pattern>/aaDweixin</url-pattern>
 	</servlet-mapping>
 
+  <servlet>
+    <servlet-name>aaLogQD</servlet-name>
+    <servlet-class>com.QDcrm.controller.LogQDController.LogQDController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>aaLogQD</servlet-name>
+    <url-pattern>/aaLogQD</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>aaLogGX</servlet-name>
+    <servlet-class>com.QDcrm.controller.LogGXController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>aaLogGX</servlet-name>
+    <url-pattern>/aaLogGX</url-pattern>
+  </servlet-mapping>
+
 
 </web-app>

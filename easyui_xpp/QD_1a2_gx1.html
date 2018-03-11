@@ -88,7 +88,7 @@
 
         // 底部加载进度条
         var loadinghtml = '<div class="loading" id="loading" style="background-color: #d9d9d9">正在加载,请稍后...</div>';
-        var nomoreresults = '<div class="loading" id="nomoreresults" style="background-color: #d9d9d9">抱歉，已经没有数据了！</div>';
+        var nomoreresults = '<div class="loading" id="nomoreresults" style="background-color: #d9d9d9">到达底线，已全部加载!</div>';
         relod = $('#gzjl_List').scrollPagination({
         // 你要搜索结果的页面
         'contentPage': {},
@@ -178,6 +178,8 @@
           //post请求体传给后台的js对象
           var send_data = {};
           send_data.uuid = Auuid;
+          send_data.userUuid = $.cookie("ckUserEmpUuid");
+          send_data.userName = $.cookie("ckUserName");
           // alert( "选择的行的uuid: "+send_data);
           //调用ajax方法传给后台接口
           $.ajax({
@@ -274,6 +276,8 @@
       if(flag){
         var add_data = $("#ffAdd").serializeObject();
         add_data.ditchUuid = $.cookie('ck_uuid_ditch');
+        add_data.userUuid = $.cookie("ckUserEmpUuid");
+        add_data.userName = $.cookie("ckUserName");
         console.log(add_data);
         $.ajax({
           url:"/QDcrm/aaRecord?qqiu=add",
@@ -297,6 +301,8 @@
       if(flag){
         var add_data = $("#ffDlg").serializeObject();
         add_data.uuid = uuid;
+        add_data.userUuid = $.cookie("ckUserEmpUuid");
+        add_data.userName = $.cookie("ckUserName");
         console.log(add_data);
         $.ajax({
           url:"/QDcrm/aaRecord?qqiu=edit",

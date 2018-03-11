@@ -69,7 +69,9 @@
             var flag = yzV1();
             if(flag){
                 var param = $("#ff").serializeObject();
-                param.ditchUuid = $.cookie('ck_ditchUuid')||'dc8792e9-60f9-4d55-83e8-13c3fb6c06f5';
+                param.ditchUuid = $.cookie('ck_ditchUuid');
+                param.userUuid = $.cookie("ckUserEmpUuid");
+                param.userName = $.cookie("ckUserName");
                 console.log(param);
                 $.ajax({
                     url: "/QDcrm/aaRecord?qqiu=add",

@@ -126,6 +126,8 @@
 			if (flag) {
 			//$('#ff').form('submit');
 			var param = $("#ff").serializeObject();
+			param.userUuid = $.cookie("ckUserEmpUuid");
+			param.userName = $.cookie("ckUserName");
 			console.log(param);
 			$.ajax({
 				
@@ -140,7 +142,7 @@
 				Conuuid = $.cookie("ck_ditchUuid",obj.data);
 				console.log(Conuuid);
 				//调用父级弹窗start
-//	           	window.location.href="QD_1a1_gx1.html";
+	           	window.location.href="QD_1a1_gx1.html";
         		//调用父级弹窗end
 				
 				}

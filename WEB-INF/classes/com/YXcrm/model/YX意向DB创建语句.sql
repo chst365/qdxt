@@ -1,19 +1,33 @@
 ﻿--------------------------------------
---2、渠道表t_ditch
+--2、意向学员表t_yxstudent
 
-CREATE TABLE t_ditch (
+CREATE TABLE t_yxstudent (
   uuid varchar(50) NOT NULL,
   name varchar(50) NOT NULL,
-  sex varchar(50) NOT NULL,
-  phone varchar(50) NOT NULL,
-  weixin varchar(50) NOT NULL,
-  company varchar(50) NOT NULL,
-  job varchar(50) NOT NULL,
+  sex varchar(50) DEFAULT NULL,
+  phone varchar(50) DEFAULT NULL,
+  grade varchar(50) DEFAULT NULL,
+  school varchar(50) DEFAULT NULL,
+  weixin varchar(50) DEFAULT NULL,
+  
+  studentID int NOT NULL,
+  
+  parentRela varchar(50) DEFAULT NULL,
+  parentName varchar(50) DEFAULT NULL,
+  parentPhone varchar(50) DEFAULT NULL,
+  parentWeixin varchar(50) DEFAULT NULL,
+  
+    
+  parentRela2 varchar(50) DEFAULT NULL,
+  parentName2 varchar(50) DEFAULT NULL,
+  parentPhone2 varchar(50) DEFAULT NULL,
+  parentWeixin2 varchar(50) DEFAULT NULL,
+  
   empUuid varchar(50) NOT NULL,
   rank varchar(50) NOT NULL,
   source varchar(50) NOT NULL,
+  courseYX varchar(250) NOT NULL,
   
-  remark varchar(250) DEFAULT NULL,
   openAndclose varchar(10) DEFAULT NULL,
   
   createDate datetime DEFAULT NULL,
@@ -29,7 +43,7 @@ CREATE TABLE t_ditch (
 
 CREATE TABLE t_record (
   uuid varchar(50) NOT NULL,
-  ditchUuid varchar(50) NOT NULL,
+  yxstuUuid varchar(50) NOT NULL,
   recordDate varchar(50) DEFAULT NULL,
   remarkText varchar(250) DEFAULT NULL,
   
@@ -105,9 +119,9 @@ CREATE TABLE t_dweixin (
 );
 
 --------------------------------------
--- 学生日志表t_logqd
+-- 学生日志表t_logstu
 
-CREATE TABLE t_logqd (
+CREATE TABLE t_logstu (
   uuid varchar(50) NOT NULL,
   userUuid varchar(50) NOT NULL,
   userName varchar(50) NOT NULL,
@@ -141,10 +155,6 @@ CREATE TABLE t_loggx (
   
   PRIMARY KEY (uuid)
 );
-
-
---------------------------------------
-
 
 --------------------------------------
 
