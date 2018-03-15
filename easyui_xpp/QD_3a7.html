@@ -56,8 +56,13 @@
 </head>
 <body>
 <div class="tab-con">
-    <div id="header_1" >
-        <h2>渠道日志</h2>
+    <div id="header_1" style="overflow: hidden;position: relative;z-index: 10;">
+        <h2 class="tit-tit" style="float: left;padding-bottom: 0;line-height: 40px;">渠道日志</h2>
+            <select id="txt-toggle" class="sel_s" style="float: left;margin-left: 20px;line-height: 36px;border:1px solid #d9d9d9;padding-left: 10px;border-radius: 5px;color:#646464;font-size:16px;width:110px;">
+                <option>渠道日志</option>
+                <option>跟踪日志</option>
+            </select>
+
     </div>
     <div class="btn-main" style="position: relative;z-index: 999;width:500px;">
         <button class="btn-class" id="btn-del" style="background-color: red">删除</button>
@@ -72,6 +77,7 @@
                 <th>操作数据中文名</th>
                 <th>操作行为</th>
                 <th>操作时间</th>
+                <th>跟踪备注</th>
             </tr>
         </thead>
         <tbody>
@@ -84,6 +90,7 @@
                 <th>操作数据中文名</th>
                 <th>操作行为</th>
                 <th>操作时间</th>
+                <th>跟踪备注</th>
             </tr>
         </tfoot>
     </table>
@@ -91,6 +98,7 @@
 </div>
 </body>
 <script>
+    var listUrl,delUrl,tabData;
     $(document).ready(function(){
         //按钮权限开始
         function funBtn(){
@@ -105,55 +113,65 @@
         funBtn();
         /*第零步：把datatables插件的警告窗变成控制台打印*/
         $.fn.dataTable.ext.errMode = 'none';
-
-        /* 对话框关闭事件 */
-        $(function(){
-            $('.panel-tool ,#close-d').click(function(){
-                $( "#dialog" ).dialog( "close" );
-            })
-        });
+        /* url判断 */
+        listUrl = "/QDcrm/aaLogQD?qqiu=list";
+        delUrl = "/QDcrm/aaLogQD?qqiu=delete";
         /* 第一步：展示列表数据 */
-        var tabData = $("#adm-user").DataTable({
-            "dom":'frtpi',
-            "order": [[ 5, "desc" ]],
-            "bLengthChange":false,
-            bSort:true,
-            language: {
-                "sProcessing": "处理中...",
-                "sLengthMenu": "显示 _MENU_ 项结果",
-                "sZeroRecords": "没有匹配结果",
-                "sInfo": "共 _TOTAL_ 项",
-                "sInfoEmpty": "共 0 项",
-                "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                "sInfoPostFix": "",
-                "sSearch": "搜索:",
-                "sUrl": "",
-                "sEmptyTable": "表中数据为空",
-                "sLoadingRecords": "载入中...",
-                "sInfoThousands": ",",
-                "oPaginate": {
-                    "sFirst": "首页",
-                    "sPrevious": "上页",
-                    "sNext": "下页",
-                    "sLast": "末页"
-                },
-                "oAria": {
-                    "sSortAscending": ": 以升序排列此列",
-                    "sSortDescending": ": 以降序排列此列"
-                }
-            },
-            ajax:{
-                url:"/QDcrm/aaLogQD?qqiu=list"
-            },
-            columns:[
-                {"data":"userName"},
-                { "data":"tableName"},
-                { "data":"tableNameChina"},
-                { "data":"dataName"},
-                { "data":"userAction"},
-                { "data":"updateTime"}
-            ]
+        var allData = {};
+        $.ajax({
+            url:listUrl,
+            type:"GET",
+            data:JSON.stringify(allData),
+            contentType:"application/json;charset=UTF-8",
+            success:function (result) {
+                huidiao(result);
+            }
         });
+        function huidiao(result) {
+            var objData = result.data;
+            console.log(objData);
+            $("#adm-user").dataTable().fnDestroy();
+            tabData = $("#adm-user").DataTable({
+                "dom":'frtpi',
+                "order": [[ 5, "desc" ]],
+                "bLengthChange":false,
+                bSort:true,
+                language: {
+                    "sProcessing": "处理中...",
+                    "sLengthMenu": "显示 _MENU_ 项结果",
+                    "sZeroRecords": "没有匹配结果",
+                    "sInfo": "共 _TOTAL_ 项",
+                    "sInfoEmpty": "共 0 项",
+                    "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                    "sInfoPostFix": "",
+                    "sSearch": "搜索:",
+                    "sUrl": "",
+                    "sEmptyTable": "表中数据为空",
+                    "sLoadingRecords": "载入中...",
+                    "sInfoThousands": ",",
+                    "oPaginate": {
+                        "sFirst": "首页",
+                        "sPrevious": "上页",
+                        "sNext": "下页",
+                        "sLast": "末页"
+                    },
+                    "oAria": {
+                        "sSortAscending": ": 以升序排列此列",
+                        "sSortDescending": ": 以降序排列此列"
+                    }
+                },
+                data:objData,
+                columns:[
+                    {"data":"userName"},
+                    { "data":"tableName"},
+                    { "data":"tableNameChina"},
+                    { "data":"dataName"},
+                    { "data":"userAction"},
+                    { "data":"updateTime"},
+                    { "data":"dataGxChina"}
+                ]
+            });
+        }
         /* 第二步：对选中列表进行操作 */
         var selTable = $("#adm-user").on("click","tr",function(){
             if($(this).hasClass("selected")){
@@ -172,17 +190,68 @@
             var delData = {};
             delData.uuid = delCon;
             /* ajax调用数据接口 */
-            $.ajax({
-                url:"/QDcrm/aaLogQD?qqiu=delete",
-                type:"POST",
-                data:JSON.stringify(delData),
-                contentType:"application/json;charset=UTF-8",
-                success:function(result){
-//                    console.log(typeof result);
-                    alert(result.message);
-                    window.location.reload();//页面刷新
-                }
-            });
+            $('.tit-tit').text($('#txt-toggle').val());
+            var txt = $('#txt-toggle').val();
+            if(txt == "跟踪日志"){
+                delUrl = "/QDcrm/aaLogGX?qqiu=delete";
+                $.ajax({
+                    url:delUrl,
+                    type:"POST",
+                    data:JSON.stringify(delData),
+                    contentType:"application/json;charset=UTF-8",
+                    success:function(result){
+                   var obj = JSON.parse(result);
+                        alert(obj.message);
+//                         window.location.reload();//页面刷新
+                    }
+                });
+            }else {
+                delUrl = "/QDcrm/aaLogQD?qqiu=delete";
+                $.ajax({
+                    url:delUrl,
+                    type:"POST",
+                    data:JSON.stringify(delData),
+                    contentType:"application/json;charset=UTF-8",
+                    success:function(result){
+//                   console.log(typeof result);
+                        alert(result.message);
+//                        window.location.reload();//页面刷新
+                    }
+                });
+            }
+
+        });
+        $('#txt-toggle').on("change",function () {
+            $('.tit-tit').text($('#txt-toggle').val());
+            var txt = $('#txt-toggle').val();
+            console.log(txt);
+            if(txt == "跟踪日志"){
+                listUrl ="/QDcrm/aaLogGX?qqiu=list";
+                var allData = {};
+                $.ajax({
+                    url:listUrl,
+                    type:"GET",
+                    data:JSON.stringify(allData),
+                    contentType:"application/json;charset=UTF-8",
+                    success:function (result) {
+                        result = JSON.parse(result);
+                        huidiao(result);
+                        console.log(result);
+                    }
+                });
+            }else {
+                listUrl = "/QDcrm/aaLogQD?qqiu=list";
+
+                $.ajax({
+                    url:listUrl,
+                    type:"GET",
+                    contentType:"application/json;charset=UTF-8",
+                    success:function (result) {
+                        huidiao(result);
+                        console.log(result);
+                    }
+                });
+            }
         });
     });
 </script>
