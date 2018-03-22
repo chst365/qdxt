@@ -200,36 +200,38 @@
 
     //步骤3，删除按钮单击事件
     $('#delbut').click( function () {
+        if(confirm("确定要删除吗？")){
+          //要初始化一个对象，不然会报undifine未定义错误
+          var delRowData = {};
+          //获取选择那一行的数据
+          delRowData = table.row('.selected').data();
+          //获取选择行中的uuid字段
+          var Auuid = delRowData.uuid;
 
-        //要初始化一个对象，不然会报undifine未定义错误
-        var delRowData = {};
-        //获取选择那一行的数据
-         delRowData = table.row('.selected').data();
-         //获取选择行中的uuid字段
-         var Auuid = delRowData.uuid;
-         
-         //post请求体传给后台的js对象
-         var send_data = {};
-         send_data.uuid = Auuid;
-         // alert( "选择的行的uuid: "+send_data);
-         //调用ajax方法传给后台接口
-         $.ajax({
-				
-				url:"/QDcrm/aaEmp?qqiu=delete",
-				type: "POST",
-				//data: JSON.stringify(param),
-				data: JSON.stringify(send_data),
-				contentType: "application/json;charset=UTF-8", 
-				success:function(result){
-                    var obj = JSON.parse(result);
-                    alert(obj.message);
-					window.location.reload();
+          //post请求体传给后台的js对象
+          var send_data = {};
+          send_data.uuid = Auuid;
+          // alert( "选择的行的uuid: "+send_data);
+          //调用ajax方法传给后台接口
+          $.ajax({
 
-				}
-			 
-			});//end $.ajax
+            url:"/QDcrm/aaEmp?qqiu=delete",
+            type: "POST",
+            //data: JSON.stringify(param),
+            data: JSON.stringify(send_data),
+            contentType: "application/json;charset=UTF-8",
+            success:function(result){
+              var obj = JSON.parse(result);
+              alert(obj.message);
+              window.location.reload();
 
-         table.row('.selected').remove().draw( false );//图形删除，没有传到后台接口
+            }
+
+          });//end $.ajax
+
+          table.row('.selected').remove().draw( false );//图形删除，没有传到后台接口
+        }
+
     } );//end 3 外圈 $('#delbut').click
 
     //步骤4，对话框初始配置
@@ -371,7 +373,7 @@
             <!-- 留空开始 -->
 	    	<div style="position: relative;z-index: 999;width:500px;">
                 <button id="opener" class="btn-class">编辑</button>
-			    <button id="delbut" class="btn-class">删除</button>
+			    <button id="delbut" class="btn-class"style="background-color:red;">删除</button>
 	    	</div>
 			<!-- 留空结束 -->
 	    	

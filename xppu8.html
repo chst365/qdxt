@@ -3,7 +3,7 @@
 <head>
     <meta name="content-type" content="text/html; charset=utf-8">
     <meta charset="UTF-8">
-    <title>渠道跟踪管理系统</title>
+    <title>树袋老师渠道管理系统</title>
 
     <!-- idTabs链接文件 -->
     
@@ -130,7 +130,6 @@ margin:0px; padding:0;text-align:center;}
          $( "#menu_5" ).hide();
          $( "#menu_6" ).hide();
          $( "#menu_7" ).hide();
-         $( "#menu_8" ).hide();
 
         //取cookie里的数组
         var viewArr = $.cookie("rsList").split(",");
@@ -143,7 +142,6 @@ margin:0px; padding:0;text-align:center;}
         if(viewArr[i]=="E") {$( "#menu_5" ).show();}
         if(viewArr[i]=="F") {$( "#menu_6" ).show();}
         if(viewArr[i]=="G") {$( "#menu_7" ).show();}
-        if(viewArr[i]=="H") {$( "#menu_8" ).show();}
         }//end for
 
         //一级菜单权限结束
@@ -153,31 +151,35 @@ margin:0px; padding:0;text-align:center;}
          console.log("进入了隐藏二级菜单!");
          $( "#menu_a2" ).hide();
          $( "#menu_a3" ).hide();
-         $( "#menu_a4" ).hide();
-         $( "#menu_a5" ).hide();
          $( "#menu_b1" ).hide();
          $( "#menu_b2" ).hide();
-         $( "#menu_b3" ).hide();
-        
+         $( "#menu_c1" ).hide();
+         $( "#menu_c2" ).hide();
+         $( "#menu_c3" ).hide();
+         $( "#menu_c4" ).hide();
+         $( "#menu_c5" ).hide();
+         $( "#menu_c6" ).hide();
+         $( "#menu_c7" ).hide();
+
         
 
 
         for (var i = 0; i < viewArr.length; i++) {
         // console.log("第"+i+"个："+viewArr[i]);   
-        if(viewArr[i]=="Ae") {$( "#menu_a1" ).show();}  //我的今日课，班主任
-        if(viewArr[i]=="Ab") {$( "#menu_a2" ).show();} //全校今日课程
-        if(viewArr[i]=="Ac") {$( "#menu_a3" ).show();} //学生课消统计
-        //if(viewArr[i]=="Ad") {$( "#menu_a4" ).show();} //老师课消统计
-        if(viewArr[i]=="Aa") {$( "#menu_a5" ).show();} //我的今日课，老师
+            if(viewArr[i]=="Ae") {$( "#menu_a1" ).show();}  //我的今日课，班主任
+            if(viewArr[i]=="Ab") {$( "#menu_a2" ).show();} //全校今日课程
+            if(viewArr[i]=="Ac") {$( "#menu_a3" ).show();} //学生课消统计
+            if(viewArr[i]=="Ad") {$( "#menu_a4" ).show();} //老师课消统计
+            if(viewArr[i]=="Ba") {$( "#menu_b1" ).show();}
+            if(viewArr[i]=="Bb") {$( "#menu_b2" ).show();}
 
-        if(viewArr[i]=="Ba") {$( "#menu_b1" ).show();}
-        if(viewArr[i]=="Bb") {$( "#menu_b2" ).show();}
-        if(viewArr[i]=="Bc") {$( "#menu_b3" ).show();}
-
-
-        if(viewArr[i]=="Ca") {$( "#menu_c1" ).show();}
-        if(viewArr[i]=="Cb") {$( "#menu_c2" ).show();}
-        if(viewArr[i]=="Cc") {$( "#menu_c3" ).show();}
+            if(viewArr[i]=="Ca") {$( "#menu_c1" ).show();}
+            if(viewArr[i]=="Cb") {$( "#menu_c2" ).show();}
+            if(viewArr[i]=="Cc") {$( "#menu_c3" ).show();}
+            if(viewArr[i]=="Cd") {$( "#menu_c4" ).show();}
+            if(viewArr[i]=="Ce") {$( "#menu_c5" ).show();}
+            if(viewArr[i]=="Cf") {$( "#menu_c6" ).show();}
+            if(viewArr[i]=="Cg") {$( "#menu_c7" ).show();}
 
                               
         }//end for
@@ -288,7 +290,7 @@ margin:0px; padding:0;text-align:center;}
 
                  document.getElementById('ifr3a7').src="easyui_xpp/QD_3a7.html";
                  // alert("点击了管理班级");
-                 console.log("点击了学员日志");
+                 console.log("点击了日志页面");
              });
 
         //单击二级菜单结束

@@ -63,7 +63,7 @@
       else
       {
         alert("没有登陆");
-        window.location.href="../login.html";
+        // window.location.href="../login.html";
       }
     $(document).ready(function() {
 
@@ -74,13 +74,13 @@
         //判断已经退出登陆
         if ($.cookie("rsList") == "") {
           console.log("检测没有权限，重新登录或联系管理员");
-          window.location.href = "../login.html";
+          // window.location.href = "../login.html";
         }
         console.log("jquery里检测已经登陆");
       }
       else {
         console.log("jquery里检测没有登陆");
-        window.location.href = "../login.html";
+        // window.location.href = "../login.html";
       }
         //按钮权限开始
         function funBtn(){
@@ -135,8 +135,9 @@
             { "data": "moneyRate" },
             { "data": "company" },
             { "data": "job" },
-            { "data": "weixin" },
             { "data": "phone" },
+            { "data": "createDate" },
+            { "data": "modifyDate" },
             {
                 "data": null,
                 "searchable": true,
@@ -225,39 +226,41 @@
 
     //步骤3，删除按钮单击事件
     $('#delbut').click( function () {
+         if(confirm("确定要删除？")){
+           //要初始化一个对象，不然会报undifine未定义错误
+           var delRowData = {};
+           //获取选择那一行的数据
+           delRowData = table.row('.selected').data();
+           //获取选择行中的uuid字段
+           var Auuid = delRowData.uuid;
 
-        //要初始化一个对象，不然会报undifine未定义错误
-        var delRowData = {};
-        //获取选择那一行的数据
-         delRowData = table.row('.selected').data();
-         //获取选择行中的uuid字段
-         var Auuid = delRowData.uuid;
-         
-         //post请求体传给后台的js对象
-         var send_data = {};
-         send_data.uuid = Auuid;
-         send_data.userUuid = $.cookie("ckUserEmpUuid");
-         send_data.userName = $.cookie("ckUserName");
-         // alert( "选择的行的uuid: "+send_data);
-         //调用ajax方法传给后台接口
-         $.ajax({
-				
-				url:"/QDcrm/aaDitch?qqiu=delete",
-				type: "POST",
-				//data: JSON.stringify(param),
-				data: JSON.stringify(send_data),
-				contentType: "application/json;charset=UTF-8", 
-				success:function(result){
-                    setTimeout(function(){
-                        $('.alert-main').show(1000).delay(6000).hide(1000);
-                    });
-					/*window.location.reload();*/
+           //post请求体传给后台的js对象
+           var send_data = {};
+           send_data.uuid = Auuid;
+           send_data.userUuid = $.cookie("ckUserEmpUuid");
+           send_data.userName = $.cookie("ckUserName");
+           // alert( "选择的行的uuid: "+send_data);
+           //调用ajax方法传给后台接口
+           $.ajax({
 
-				}
-			 
-			});//end $.ajax
-            /* 弹窗事件 */
-         table.row('.selected').remove().draw( false );//图形删除，没有传到后台接口
+             url:"/QDcrm/aaDitch?qqiu=delete",
+             type: "POST",
+             //data: JSON.stringify(param),
+             data: JSON.stringify(send_data),
+             contentType: "application/json;charset=UTF-8",
+             success:function(result){
+               setTimeout(function(){
+                 $('.alert-main').show(1000).delay(6000).hide(1000);
+               });
+                 /*window.location.reload();*/
+
+             }
+
+           });//end $.ajax
+             /* 弹窗事件 */
+           table.row('.selected').remove().draw( false );//图形删除，没有传到后台接口
+         }
+
     } );//end 外圈 $('#delbut').click
 
    //步骤4，对话框初始配置
@@ -402,45 +405,38 @@
 	    	<div style="position: relative;z-index: 999;width:500px;">
                 <button id="opener" class="btn-class">编辑</button>
                 <button id="genjin" class="btn-class">渠道跟进</button>
-			    <button id="delbut" class="btn-class" >删除</button>
+			    <button id="delbut" class="btn-class"style="background-color:red;" >删除</button>
 	    	</div>
                     <!--start div id="listTable" 列表展示开始 -->
             		<div id="listTable">
                     <table id="example" class="display tab-mians" cellspacing="0" width="100%">
                         <thead class="tab-tit">
-                            <tr>
-                                <th>姓名</th>
-                                <th>负责人</th>
-                                <th>渠道等级</th>
-                                <th>佣金比例</th>
-                                <th>单位</th>
-                                <th>职位</th>
-                                <th>微信号</th>
-                                <th>手机号</th>
-                                <th>状态</th>
-                            </tr>
+                        <tr>
+                            <th style="min-width: 80px;">姓名</th>
+                            <th style="min-width: 80px;">负责人</th>
+                            <th style="min-width: 70px;">渠道等级</th>
+                            <th style="min-width: 70px;">佣金比例</th>
+                            <th style="min-width: 80px;">单位</th>
+                            <th style="min-width: 80px;">职位</th>
+                            <th style="min-width: 80px;">手机号</th>
+                            <th style="min-width: 190px;">创建时间</th>
+                            <th style="min-width: 190px;">最近更新时间</th>
+                            <th>状态</th>
+                        </tr>
                         </thead>
-                        <!--<tbody class="tab-body">-->
-                            <!--<tr>-->
-                                <!--<td>陆佳琪</td>-->
-                                <!--<td>80</td>-->
-                                <!--<td>共和路校区</td>-->
-                                <!--<td>高一</td>-->
-                                <!--<td>15896314598</td>-->
-                                <!--<td>陆家长</td>-->
-                                <!--<td>15987641295</td>-->
-                            <!--</tr>-->
-                        <!--</tbody>-->
+                        <tbody class="tab-body">
+                        </tbody>
                         <tfoot class="tab-tit">
                         <tr>
                             <th>姓名</th>
                             <th>负责人</th>
-                            <th>渠道等级</th>
-                            <th>佣金比例</th>
-                            <th>单位</th>
-                            <th>职位</th>
-                            <th>微信号</th>
-                            <th>手机号</th>
+                            <th style="min-width: 70px;">渠道等级</th>
+                            <th style="min-width: 70px;">佣金比例</th>
+                            <th style="min-width: 80px;">单位</th>
+                            <th style="min-width: 80px;">职位</th>
+                            <th style="min-width: 80px;">手机号</th>
+                            <th style="min-width: 190px;">创建时间</th>
+                            <th style="min-width: 190px;">最近更新时间</th>
                             <th>状态</th>
                         </tr>
                         </tfoot>

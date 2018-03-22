@@ -61,7 +61,7 @@
     </div>
     <div class="btn-main" style="position: relative;z-index: 999;width:500px;">
         <button class="btn-class" id="btn-edi">编辑</button>
-        <button class="btn-class" id="btn-del">删除</button>
+        <button class="btn-class" id="btn-del" style="background-color:red;">删除</button>
     </div>
     <!--S--表格开始 -->
     <table id="adm-user" class="display tab-mians" cellspacing="0" width="100%">
@@ -201,24 +201,27 @@
         });
         /* 第三步：删除按钮的事件 */
         $("#btn-del").click(function(){
-            var delTableTr = {};
-            delTableTr = tabData.row(".selected").data();
-            tabData.row(".selected").remove().draw(false);//在页面进行删除操作
-            var delCon = delTableTr.uuid;
-            var delData = {};
-            delData.uuid = delCon;
-            /* ajax调用数据接口 */
-            $.ajax({
+            if(confirm("确定要删除吗？")){
+              var delTableTr = {};
+              delTableTr = tabData.row(".selected").data();
+              tabData.row(".selected").remove().draw(false);//在页面进行删除操作
+              var delCon = delTableTr.uuid;
+              var delData = {};
+              delData.uuid = delCon;
+                /* ajax调用数据接口 */
+              $.ajax({
                 url:"/QDcrm/aaRole?qqiu=delete",
                 type:"POST",
                 data:JSON.stringify(delData),
                 contentType:"application/json;charset=UTF-8",
                 success:function(result){
-                    var obj = JSON.parse(result);
-                    alert(obj.message);
-                    window.location.reload();//页面刷新
+                  var obj = JSON.parse(result);
+                  alert(obj.message);
+                  window.location.reload();//页面刷新
                 }
-            });
+              });
+            }
+
         });
         /* 第四步：点击编辑按钮出现弹窗 */
         //获取选中行的值，并把值给到弹窗相应的位置

@@ -31,7 +31,7 @@
         alert("没有登陆");
         window.location.href="../login.html";
       }
-      var table_ye2,a2data,curD,uuid,reMark,Dat;//全局变量
+      var table_ye2,a2data,curD,uuid,reMark,Dat,createPeople;//全局变量
       var relod = {};
       $(document).ready(function() {
         var NameOfCookie = "rsList";
@@ -129,12 +129,13 @@
                     console.log(Obj);
                     var html = "";
                     html += "<div class=\"show_box\"style=\"border:1px solid #d9d9d9;border-radius:5px;margin-top:20px;margin-right:20px;padding:10px 20px;\">";
-                    html += "    <div class=\"jl_date\"style=\"border-bottom:1px solid #d9d9d9;height:25px;line-height:25px;color:#757574;\">"+Obj.recordDate+"</div>";
+                    html += "    <div class=\"jl_date\"style=\"border-bottom:1px solid #d9d9d9;height:25px;line-height:25px;color:#757574;display:inline-block;width:16%;float:left;\">"+Obj.recordDate+"</div>";
+                    html += "    <div class=\"jl_persion\"style=\"border-bottom:1px solid #d9d9d9;height:25px;line-height:25px;color:#757574;display:inline-block;width:84%;float:left;\">"+"创建人:"+Obj.createPeople+"</div>";
                     html += "    <div class=\"jl_remark\"style=\"line-height:40px;font-size:20px;margin-bottom:20px;\">"+Obj.remarkText+"</div>";
                     html += "    <div class=\"jl_uuid\"style=\"display:none;\">"+Obj.uuid+"</div>";
                     html += "<div class=\"btn-box btn\" style=\"margin-top:30px;\">";
                     html += "<button  class=\"easyui-linkbutton btn-qr opener\" >修改</button>";
-                    html += "<button  class=\"easyui-linkbutton btn-qr delbut\" >删除</button>";
+                    html += "<button  class=\"easyui-linkbutton btn-qr delbut\"style=\"background-color:red;\" >删除</button>";
                     html += "</div>";
                     html += "</div>";
                     $('#gzjl_List').append(html);
@@ -214,7 +215,7 @@
       var editData = {};
       console.log($(this).parent().prevAll());
       reMark = $(this).parent().prevAll()[1];
-      dat = $(this).parent().prevAll()[2];
+      dat = $(this).parent().prevAll()[3];
       editData.remark = reMark.outerText||reMark.textContent;
       editData.date = dat.outerText||dat.textContent;
       console.log(editData);
@@ -288,7 +289,7 @@
           success:function(result){
             var obj = JSON.parse(result);
             alert(obj.message);
-            $("#gzjl_List").prepend("<div class=\"show_box\"style=\"border:1px solid #d9d9d9;border-radius:5px;margin-top:20px;margin-right:20px;padding:10px 20px;\"><div class=\"jl_date\"style=\"border-bottom:1px solid #d9d9d9;height:50px;line-height:50px;color:#757574;\">"+add_data.recordDate+"</div><div class=\"jl_remark\"style=\"line-height:40px;font-size:20px;margin-bottom:20px;\">"+add_data.remarkText+"</div><div class=\"jl_uuid\"style=\"display:none;\">"+obj.data+"</div><div class=\"btn-box btn\" style=\"margin-top:30px;\"><button  class=\"easyui-linkbutton btn-qr opener\" >修改</button><button  class=\"easyui-linkbutton btn-qr delbut\" >删除</button></div></div>");
+            $("#gzjl_List").prepend("<div class=\"show_box\"style=\"border:1px solid #d9d9d9;border-radius:5px;margin-top:20px;margin-right:20px;padding:10px 20px;\"><div class=\"jl_date\"style=\"border-bottom:1px solid #d9d9d9;height:50px;line-height:50px;color:#757574;display:inline-block;width:16%;float:left;\">"+add_data.recordDate+"</div><div class=\"jl_persion\"style=\"border-bottom:1px solid #d9d9d9;height:50px;line-height:50px;color:#757574;display:inline-block;width:84%;float:left;\">"+"创建人:"+add_data.userName+"</div><div class=\"jl_remark\"style=\"line-height:40px;font-size:20px;margin-bottom:20px;\">"+add_data.remarkText+"</div><div class=\"jl_uuid\"style=\"display:none;\">"+obj.data+"</div><div class=\"btn-box btn\" style=\"margin-top:30px;\"><button  class=\"easyui-linkbutton btn-qr opener\" >修改</button><button  class=\"easyui-linkbutton btn-qr delbut\"style=\"background-color: red;\" >删除</button></div></div>");
             $('#ffAdd').form('clear');
           }
         });
@@ -315,6 +316,7 @@
             alert(obj.message);
             $( "#dialog" ).dialog( "close" );
             reMark.innerHTML = add_data.remarkText;
+//            dat.innerHTML = add_data.recordDate;
             dat.innerHTML = add_data.recordDate;
           }
         });

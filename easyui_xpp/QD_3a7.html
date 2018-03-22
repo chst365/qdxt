@@ -66,31 +66,34 @@
     </div>
     <div class="btn-main" style="position: relative;z-index: 999;width:500px;">
         <button class="btn-class" id="btn-del" style="background-color: red">删除</button>
+        <button class="btn-class" id="delbutMore" style="background-color: red">批量删除</button>
     </div>
     <!--S--表格开始 -->
     <table id="adm-user" class="display tab-mians" cellspacing="0" width="100%">
         <thead class="tab-tit">
             <tr>
-                <th>用户名</th>
-                <th>操作数据库表名</th>
-                <th>操作数据库表中文名</th>
-                <th>操作数据中文名</th>
-                <th>操作行为</th>
-                <th>操作时间</th>
-                <th>跟踪备注</th>
+                <th style="width:40px;">多选</th>
+                <th style="min-width:120px;">用户名</th>
+                <th style="min-width:120px;">菜单名</th>
+                <!-- <th style="min-width:120px;">操作数据库表中文名</th> -->
+                <th style="min-width:120px;">学员名</th>
+                <th style="min-width:120px;">操作行为</th>
+                <th style="min-width:190px;">操作时间</th>
+                <th style="max-width:300px;word-wrap:break-word;">跟踪备注</th>
             </tr>
         </thead>
         <tbody>
         </tbody>
         <tfoot class="tab-tit">
             <tr>
-                <th>用户名</th>
-                <th>操作数据库表名</th>
-                <th>操作数据库表中文名</th>
-                <th>操作数据中文名</th>
-                <th>操作行为</th>
-                <th>操作时间</th>
-                <th>跟踪备注</th>
+                <th style="width:40px;">多选</th>
+                <th style="min-width:120px;">用户名</th>
+                <th style="min-width:120px;">菜单名</th>
+                <!-- <th style="min-width:120px;">操作数据库表中文名</th> -->
+                <th style="min-width:120px;">学员名</th>
+                <th style="min-width:120px;">操作行为</th>
+                <th style="min-width:190px;">操作时间</th>
+                <th style="max-width:300px;word-wrap:break-word;">跟踪备注</th>
             </tr>
         </tfoot>
     </table>
@@ -99,18 +102,128 @@
 </body>
 <script>
     var listUrl,delUrl,tabData;
+    var remarkShowLength = 10;
+    //切换显示备注信息，显示部分或者全部
+    function changeShowRemarks(obj) {//obj是td
+      var content = $(obj).attr("content");
+      if (content != null && content != '') {
+        if ($(obj).attr("isDetail") == 'true') {//当前显示的是详细备注，切换到显示部分
+          //$(obj).removeAttr('isDetail');//remove也可以
+          $(obj).attr('isDetail', false);
+          $(obj).html(getPartialRemarksHtml(content));
+        } else {//当前显示的是部分备注信息，切换到显示全部
+          $(obj).attr('isDetail', true);
+          $(obj).html(getTotalRemarksHtml(content));
+        }
+      }
+    }
+    //部分备注信息
+    function getPartialRemarksHtml(remarks){
+      return remarks.substr(0,remarkShowLength) + '&nbsp;&nbsp;<a href="javascript:void(0);" ><b>...</b></a>';
+    }
+
+    //全部备注信息
+    function getTotalRemarksHtml(remarks){
+      return remarks + '&nbsp;&nbsp;<a href="javascript:void(0);" >收起</a>';
+    }
     $(document).ready(function(){
         //按钮权限开始
         function funBtn(){
             $( "#btn-del" ).hide();
-
+            $( "#delbutMore" ).hide();
             var viewArr = $.cookie("rsList").split(",");
             for (var i = 0; i < viewArr.length; i++) {
                 console.log("第"+i+"个："+viewArr[i]);
                 if(viewArr[i]=="Cg1") {$( "#btn-del" ).show();}
+                if(viewArr[i]=="Cg2") {$( "#delbutMore" ).show();}
             }//end for
         }
-        funBtn();
+       funBtn();
+
+      function huidiao(result) {
+        var objData = result.data;
+        $("#adm-user").dataTable().fnDestroy();
+        tabData = $("#adm-user").DataTable({
+          "dom":'frtpi',
+          "order": [[ 5, "desc" ]],
+          "bLengthChange":false,
+          bSort:true,
+          language: {
+            "sProcessing": "处理中...",
+            "sLengthMenu": "显示 _MENU_ 项结果",
+            "sZeroRecords": "没有匹配结果",
+            "sInfo": "共 _TOTAL_ 项",
+            "sInfoEmpty": "共 0 项",
+            "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+            "sInfoPostFix": "",
+            "sSearch": "搜索:",
+            "sUrl": "",
+            "sEmptyTable": "表中数据为空",
+            "sLoadingRecords": "载入中...",
+            "sInfoThousands": ",",
+            "oPaginate": {
+              "sFirst": "首页",
+              "sPrevious": "上页",
+              "sNext": "下页",
+              "sLast": "末页"
+            },
+            "oAria": {
+              "sSortAscending": ": 以升序排列此列",
+              "sSortDescending": ": 以降序排列此列"
+            }
+          },
+          "createdRow": function( row, objData, dataIndex ) {
+            if(objData.dataGxChina){
+              if(objData.dataGxChina.length > remarkShowLength){//只有超长，才有td点击事件
+                $(row).children('td').eq(5).attr('onclick','javascript:changeShowRemarks(this);');
+              }
+              $(row).children('td').eq(5).attr('content',objData.dataGxChina);
+            }
+          },
+          data:objData,
+          columns:[
+              {
+                  "data": null,
+//                    "searchable": true,
+                  "title": "多选"
+              },
+            {"data":"userName"},
+            // { "data":"tableName"},
+            { "data":"tableNameChina"},
+            { "data":"dataName"},
+            { "data":"userAction"},
+            { "data":"updateTime"},
+            { "data":"dataGxChina"}
+          ],
+          "columnDefs" : [
+            {
+              "type": "date",
+              "targets": 6,
+              "render": function (objData, type, row, meta) {
+                console.log(row);
+                if(row.dataGxChina){
+                  if (row.dataGxChina.length > remarkShowLength) {
+                    return getPartialRemarksHtml(row.dataGxChina);
+                  }else{
+                    return row.dataGxChina;
+                  }
+                }
+
+              }
+            },{
+                  "targets": 0,
+                  "name": "状态",
+                  "cellType": "th",
+                  "orderDataType": "dom-text",
+                  "orderSequence": [ "desc","asc", "asc" ],
+                  "className": "my_class",
+                  "contentPadding": "mmm",
+                  "createdCell": function (td, cellData, rowData, row, col) {
+                      $(td).context.innerHTML='<input class="checkchild" type="checkbox"/>';
+                  }
+              }]
+        });
+      }
         /*第零步：把datatables插件的警告窗变成控制台打印*/
         $.fn.dataTable.ext.errMode = 'none';
         /* url判断 */
@@ -124,54 +237,72 @@
             data:JSON.stringify(allData),
             contentType:"application/json;charset=UTF-8",
             success:function (result) {
-                huidiao(result);
+                huidiaoOne(result);
             }
         });
-        function huidiao(result) {
-            var objData = result.data;
-            console.log(objData);
-            $("#adm-user").dataTable().fnDestroy();
-            tabData = $("#adm-user").DataTable({
-                "dom":'frtpi',
-                "order": [[ 5, "desc" ]],
-                "bLengthChange":false,
-                bSort:true,
-                language: {
-                    "sProcessing": "处理中...",
-                    "sLengthMenu": "显示 _MENU_ 项结果",
-                    "sZeroRecords": "没有匹配结果",
-                    "sInfo": "共 _TOTAL_ 项",
-                    "sInfoEmpty": "共 0 项",
-                    "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                    "sInfoPostFix": "",
-                    "sSearch": "搜索:",
-                    "sUrl": "",
-                    "sEmptyTable": "表中数据为空",
-                    "sLoadingRecords": "载入中...",
-                    "sInfoThousands": ",",
-                    "oPaginate": {
-                        "sFirst": "首页",
-                        "sPrevious": "上页",
-                        "sNext": "下页",
-                        "sLast": "末页"
-                    },
-                    "oAria": {
-                        "sSortAscending": ": 以升序排列此列",
-                        "sSortDescending": ": 以降序排列此列"
+
+        function huidiaoOne(result) {
+        var objData = result.data;
+        console.log(objData);
+        $("#adm-user").dataTable().fnDestroy();
+        tabData = $("#adm-user").DataTable({
+          "dom":'frtpi',
+          "order": [[ 5, "desc" ]],
+          "bLengthChange":false,
+          bSort:true,
+          language: {
+            "sProcessing": "处理中...",
+            "sLengthMenu": "显示 _MENU_ 项结果",
+            "sZeroRecords": "没有匹配结果",
+            "sInfo": "共 _TOTAL_ 项",
+            "sInfoEmpty": "共 0 项",
+            "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+            "sInfoPostFix": "",
+            "sSearch": "搜索:",
+            "sUrl": "",
+            "sEmptyTable": "表中数据为空",
+            "sLoadingRecords": "载入中...",
+            "sInfoThousands": ",",
+            "oPaginate": {
+              "sFirst": "首页",
+              "sPrevious": "上页",
+              "sNext": "下页",
+              "sLast": "末页"
+            },
+            "oAria": {
+              "sSortAscending": ": 以升序排列此列",
+              "sSortDescending": ": 以降序排列此列"
+            }
+          },
+          data:objData,
+          columns:[
+              {
+                  "data": null,
+//                    "searchable": true,
+                  "title": "多选"
+              },
+            {"data":"userName"},
+            // { "data":"tableName"},
+            { "data":"tableNameChina"},
+            { "data":"dataName"},
+            { "data":"userAction"},
+            { "data":"updateTime"},
+            { "data":"dataGxChina"}
+          ],
+            "columnDefs" : [{
+                    "targets": 0,
+                    "name": "状态",
+                    "cellType": "th",
+                    "orderDataType": "dom-text",
+                    "orderSequence": [ "desc","asc", "asc" ],
+                    "className": "my_class",
+                    "contentPadding": "mmm",
+                    "createdCell": function (td, cellData, rowData, row, col) {
+                        $(td).context.innerHTML='<input class="checkchild" type="checkbox"/>';
                     }
-                },
-                data:objData,
-                columns:[
-                    {"data":"userName"},
-                    { "data":"tableName"},
-                    { "data":"tableNameChina"},
-                    { "data":"dataName"},
-                    { "data":"userAction"},
-                    { "data":"updateTime"},
-                    { "data":"dataGxChina"}
-                ]
-            });
-        }
+                }]
+        });
+      }
         /* 第二步：对选中列表进行操作 */
         var selTable = $("#adm-user").on("click","tr",function(){
             if($(this).hasClass("selected")){
@@ -183,43 +314,44 @@
         });
         /* 第三步：删除按钮的事件 */
         $("#btn-del").click(function(){
-            var delTableTr = {};
-            delTableTr = tabData.row(".selected").data();
-            tabData.row(".selected").remove().draw(false);//在页面进行删除操作
-            var delCon = delTableTr.uuid;
-            var delData = {};
-            delData.uuid = delCon;
-            /* ajax调用数据接口 */
-            $('.tit-tit').text($('#txt-toggle').val());
-            var txt = $('#txt-toggle').val();
-            if(txt == "跟踪日志"){
+            if(confirm("确定要删除吗？")){
+              var delTableTr = {};
+              delTableTr = tabData.row(".selected").data();
+              tabData.row(".selected").remove().draw(false);//在页面进行删除操作
+              var delCon = delTableTr.uuid;
+              var delData = {};
+              delData.uuid = delCon;
+                /* ajax调用数据接口 */
+              $('.tit-tit').text($('#txt-toggle').val());
+              var txt = $('#txt-toggle').val();
+              if(txt == "跟踪日志"){
                 delUrl = "/QDcrm/aaLogGX?qqiu=delete";
                 $.ajax({
-                    url:delUrl,
-                    type:"POST",
-                    data:JSON.stringify(delData),
-                    contentType:"application/json;charset=UTF-8",
-                    success:function(result){
-                   var obj = JSON.parse(result);
-                        alert(obj.message);
+                  url:delUrl,
+                  type:"POST",
+                  data:JSON.stringify(delData),
+                  contentType:"application/json;charset=UTF-8",
+                  success:function(result){
+                    var obj = JSON.parse(result);
+                    alert(obj.message);
 //                         window.location.reload();//页面刷新
-                    }
+                  }
                 });
-            }else {
+              }else {
                 delUrl = "/QDcrm/aaLogQD?qqiu=delete";
                 $.ajax({
-                    url:delUrl,
-                    type:"POST",
-                    data:JSON.stringify(delData),
-                    contentType:"application/json;charset=UTF-8",
-                    success:function(result){
+                  url:delUrl,
+                  type:"POST",
+                  data:JSON.stringify(delData),
+                  contentType:"application/json;charset=UTF-8",
+                  success:function(result){
 //                   console.log(typeof result);
-                        alert(result.message);
+                    alert(result.message);
 //                        window.location.reload();//页面刷新
-                    }
+                  }
                 });
+              }
             }
-
         });
         $('#txt-toggle').on("change",function () {
             $('.tit-tit').text($('#txt-toggle').val());
@@ -247,12 +379,81 @@
                     type:"GET",
                     contentType:"application/json;charset=UTF-8",
                     success:function (result) {
-                        huidiao(result);
+                        huidiaoOne(result);
                         console.log(result);
                     }
                 });
             }
         });
+        //批量删除功能
+        $('#delbutMore').click(function(){
+            var msg = "确定删除这些排课信息么？";
+            var msg1 = "请勾选至少一条排课信息！";
+            if($(".checkchild:checkbox:checked").length==0){
+                alert(msg1);
+                return false;
+            }else{
+                if(confirm(msg) == true){
+                    var trEle=[];
+                    var delTableTr=[];
+                    tabData.$('tr.selected').removeClass('selected');
+                    $(".checkchild:checkbox:checked").parent().parent().addClass('checked');
+                    if($(".checkchild:checkbox:checked").length == $('.checkchild').length){
+                        tabData.clear().draw();
+                        $('.checkall').each(function () {
+                            this.checked = false;
+                        });
+                    }else{
+                        for(var i = $(".checkchild:checkbox:checked").length-1;i>=0;i--){
+                            trEle[i] = $(".checkchild:checkbox:checked").parent().parent()[i];
+                            delTableTr [i] = tabData.row(trEle[i]).data();
+                        }
+
+                        var delCon = [];
+                        for(var i = 0;i<delTableTr.length;i++){
+                            delCon[i] = delTableTr[i].uuid
+                        }
+                        var delData = {};
+                        delData.uuidList = delCon;
+                        console.log(delData);
+                        $('.tit-tit').text($('#txt-toggle').val());
+                        var txt = $('#txt-toggle').val();
+                        if(txt == "渠道日志"){
+                            delUrl = "/QDcrm/aaLogQD?qqiu=deleteBatch";
+                            $.ajax({
+                                url:delUrl,
+                                type:"POST",
+                                data:JSON.stringify(delData),
+                                contentType:"application/json;charset=UTF-8",
+                                success:function(result){
+//                                    var obj = JSON.parse(result);
+                                    alert(result.message);
+                                    window.location.reload();//页面刷新
+                                }
+                            });
+                        }else {
+                            delUrl = "/QDcrm/aaLogGX?qqiu=deleteBatch";
+                            $.ajax({
+                                url:delUrl,
+                                type:"POST",
+                                data:JSON.stringify(delData),
+                                contentType:"application/json;charset=UTF-8",
+                                success:function(result){
+                                    var obj = JSON.parse(result);
+                                    alert(obj.message);
+                                    for(var i = $(".checkchild:checkbox:checked").length-1;i>=0;i--){
+                                        trEle[i] = $(".checkchild:checkbox:checked").parent().parent()[i];
+                                        delTableTr [i] = tabData.row(trEle[i]).remove().draw(false);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }else {
+                    return false;
+                }
+            }
+        })
     });
 </script>
 </html>

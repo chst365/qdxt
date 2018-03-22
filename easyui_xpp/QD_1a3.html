@@ -178,8 +178,9 @@
                     { "data": "moneyRate" },
                     { "data": "company" },
                     { "data": "job" },
-                    { "data": "weixin" },
                     { "data": "phone" },
+                    { "data": "createDate" },
+                    { "data": "modifyDate" },
                     {
                         "data": null,
                         "searchable": true,
@@ -243,22 +244,22 @@
 
             //步骤3，删除按钮单击事件
             $('#delbut').click( function () {
+                if(confirm("确定要删除？")){
+                  //要初始化一个对象，不然会报undifine未定义错误
+                  var delRowData = {};
+                  //获取选择那一行的数据
+                  delRowData = table.row('.selected').data();
+                  //获取选择行中的uuid字段
+                  var Auuid = delRowData.uuid;
 
-                //要初始化一个对象，不然会报undifine未定义错误
-                var delRowData = {};
-                //获取选择那一行的数据
-                delRowData = table.row('.selected').data();
-                //获取选择行中的uuid字段
-                var Auuid = delRowData.uuid;
-
-                //post请求体传给后台的js对象
-                var send_data = {};
-                send_data.uuid = Auuid;
-                send_data.userUuid = $.cookie("ckUserEmpUuid");
-                send_data.userName = $.cookie("ckUserName");
-                // alert( "选择的行的uuid: "+send_data);
-                //调用ajax方法传给后台接口
-                $.ajax({
+                  //post请求体传给后台的js对象
+                  var send_data = {};
+                  send_data.uuid = Auuid;
+                  send_data.userUuid = $.cookie("ckUserEmpUuid");
+                  send_data.userName = $.cookie("ckUserName");
+                  // alert( "选择的行的uuid: "+send_data);
+                  //调用ajax方法传给后台接口
+                  $.ajax({
 
                     url:"/QDcrm/aaDitch?qqiu=delete",
                     type: "POST",
@@ -266,16 +267,18 @@
                     data: JSON.stringify(send_data),
                     contentType: "application/json;charset=UTF-8",
                     success:function(result){
-                        setTimeout(function(){
-                            $('.alert-main').show(1000).delay(6000).hide(1000);
-                        });
+                      setTimeout(function(){
+                        $('.alert-main').show(1000).delay(6000).hide(1000);
+                      });
                         /*window.location.reload();*/
 
                     }
 
-                });//end $.ajax
-                /* 弹窗事件 */
-                table.row('.selected').remove().draw( false );//图形删除，没有传到后台接口
+                  });//end $.ajax
+                    /* 弹窗事件 */
+                  table.row('.selected').remove().draw( false );//图形删除，没有传到后台接口
+                }
+
             } );//end 外圈 $('#delbut').click
 
             //步骤4，对话框初始配置
@@ -403,21 +406,22 @@
         <div style="position: relative;z-index: 999;width:500px;">
             <button id="opener" class="btn-class">编辑</button>
             <button id="genjin" class="btn-class">渠道跟进</button>
-            <button id="delbut" class="btn-class">删除</button>
+            <button id="delbut" class="btn-class" style="background-color:red;">删除</button>
         </div>
         <!--start div id="listTable" 列表展示开始 -->
         <div id="listTable">
             <table id="example" class="display tab-mians" cellspacing="0" width="100%">
                 <thead class="tab-tit">
                 <tr>
-                    <th>姓名</th>
-                    <th>负责人</th>
-                    <th>渠道等级</th>
-                    <th>佣金比例</th>
-                    <th>单位</th>
-                    <th>职位</th>
-                    <th>微信号</th>
-                    <th>手机号</th>
+                    <th style="min-width: 80px;">姓名</th>
+                    <th style="min-width: 80px;">负责人</th>
+                    <th style="min-width: 70px;">渠道等级</th>
+                    <th style="min-width: 70px;">佣金比例</th>
+                    <th style="min-width: 80px;">单位</th>
+                    <th style="min-width: 80px;">职位</th>
+                    <th style="min-width: 80px;">手机号</th>
+                    <th style="min-width: 190px;">创建时间</th>
+                    <th style="min-width: 190px;">最近更新时间</th>
                     <th>状态</th>
                 </tr>
                 </thead>
@@ -427,12 +431,13 @@
                 <tr>
                     <th>姓名</th>
                     <th>负责人</th>
-                    <th>渠道等级</th>
-                    <th>佣金比例</th>
-                    <th>单位</th>
-                    <th>职位</th>
-                    <th>微信号</th>
-                    <th>手机号</th>
+                    <th style="min-width: 70px;">渠道等级</th>
+                    <th style="min-width: 70px;">佣金比例</th>
+                    <th style="min-width: 80px;">单位</th>
+                    <th style="min-width: 80px;">职位</th>
+                    <th style="min-width: 80px;">手机号</th>
+                    <th style="min-width: 190px;">创建时间</th>
+                    <th style="min-width: 190px;">最近更新时间</th>
                     <th>状态</th>
                 </tr>
                 </tfoot>
@@ -447,7 +452,6 @@
     </div><!-- end div id="ye_3_text_container" -->
 
 </div><!-- end div  id="fen3a3_container"-->
-
 <div id="dialog" title="修改" closed="true" class="easyui-dialog"  style="width:980px;height: 700px;padding-left:20px;">
     <div  class="tit_style">
         <h3>基础信息</h3>
